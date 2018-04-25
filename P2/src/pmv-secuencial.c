@@ -10,10 +10,10 @@
 #include <stdio.h> // biblioteca donde se encuentra la función printf()
 #include <time.h> // biblioteca donde se encuentra la función clock_gettime() 
 
-#define PRINTF_ALL// comentar para quitar el printf ...
+//#define PRINTF_ALL// comentar para quitar el printf ...
 // que imprime todos los componentes
 
-int main(int argc, char** argv){ 
+int main(int argc, char** argv){
  
   int i, j;
   struct timespec cgt1,cgt2; double ncgt; //para tiempo de ejecución

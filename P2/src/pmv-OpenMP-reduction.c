@@ -3,8 +3,8 @@
 */ 
 
 #include <stdlib.h> // biblioteca con funciones atoi(), malloc() y free()
-#include <stdio.h>  // biblioteca donde se encuentra la función printf()
-#include <time.h>   // biblioteca donde se encuentra la función clock_gettime()
+#include <stdio.h> // biblioteca donde se encuentra la función printf()
+#include <time.h> // biblioteca donde se encuentra la función clock_gettime()
 
 #ifdef _OPENMP
    #include <omp.h> 
@@ -31,7 +31,7 @@ int main(int argc, char** argv){
   double *v1;
   double *v2;
   double **M;
-  v1 = (double*) malloc(N*sizeof(double));// malloc necesita el tamaño en bytes
+  v1 = (double*) malloc(N*sizeof(double)); // malloc necesita el tamaño en bytes
   v2 = (double*) malloc(N*sizeof(double));
   M = (double**) malloc(N*sizeof(double*));
 
@@ -47,16 +47,15 @@ int main(int argc, char** argv){
   double suma;
   cgt1 = omp_get_wtime();
 
-#pragma omp parallel for private(j,suma)
-    for(i = 0; i < N; i++){
-      suma = 0;
-      for(j = 0; j < N; j++)
-	suma += M[i][j]*v1[j];
-      v2[i] = suma;
+  for(i = 0; i < N; i++){
+    suma = 0;
+#pragma omp parallel for reduction(+:suma)
+    for(j = 0; j < N; j++)
+      suma += M[i][j]*v1[j];
+    v2[i] = suma;
   }
 
   cgt2 = omp_get_wtime();
-
   ncgt = cgt2 - cgt1;
 
   //Imprimir resultado y el tiempo de ejecución

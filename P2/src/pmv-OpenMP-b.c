@@ -12,13 +12,13 @@
    #define omp_get_thread_num() 0
 #endif
 
-#define PRINTF_ALL// comentar para quitar el printf ...
+//#define PRINTF_ALL// comentar para quitar el printf ...
 // que imprime todos los componentes
 
 int main(int argc, char** argv){ 
  
   int i, j;
-  struct timespec cgt1,cgt2; double ncgt; //para tiempo de ejecución
+  double cgt1,cgt2; double ncgt; //para tiempo de ejecución
 
   //Leer argumento de entrada (nº de componentes del vector)
   if (argc<2){ 
@@ -26,7 +26,7 @@ int main(int argc, char** argv){
     exit(-1);
   }
 
-  unsigned int N = atoi(argv[1]); // Máximo N =2^32-1=4294967295 (sizeof(unsigned int) = 4 B)
+  unsigned int N = atoi(argv[1]);
 
   double *v1;
   double *v2;
@@ -44,19 +44,26 @@ int main(int argc, char** argv){
       M[i][j] = N*0.1-j*0.1;
   } 
 
-  double suma;
-  clock_gettime(CLOCK_REALTIME,&cgt1);
+  double suma, sumalocal;
+  cgt1 = omp_get_wtime();
 
   for(i = 0; i < N; i++){
     suma = 0;
+#pragma omp parallel private(sumalocal)
+    {
+      sumalocal = 0;
+#pragma omp for
     for(j = 0; j < N; j++)
-      suma += M[i][j]*v1[j];
+      sumalocal += M[i][j]*v1[j];
+
+#pragma omp atomic
+    suma += sumalocal;
+    }
     v2[i] = suma;
   }
 
-  clock_gettime(CLOCK_REALTIME,&cgt2);
-  ncgt=(double) (cgt2.tv_sec-cgt1.tv_sec)+
-    (double) ((cgt2.tv_nsec-cgt1.tv_nsec)/(1.e+9));
+  cgt2 = omp_get_wtime();
+  ncgt = cgt2 - cgt1;
 
   //Imprimir resultado y el tiempo de ejecución
 #ifdef PRINTF_ALL

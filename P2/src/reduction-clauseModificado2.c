@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv) {
 
-  int i, n=20, a[n],suma=0;
+  int i, n=20, a[n],suma=10;
 
   if(argc < 2) {
     fprintf(stderr,"Falta iteraciones\n");
