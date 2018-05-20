@@ -2,9 +2,9 @@
 #include <time.h>
 
 struct {
-  int a;
-  int b;
-} s[5000];
+  int a[5000];
+  int b[5000];
+} s;
 
 int R[40000];
 
@@ -12,10 +12,8 @@ int main()
 {
   int ii, i, X1, X2;
   
-  for(i = 0; i < 5000; i++){
-    s[i].a = 1;
-    s[i].b = 2;
-  }
+  for(i = 0; i < 5000; i++) s.a[i] = 1;
+  for(i = 0; i < 5000; i++) s.b[i] = 2;
   
   struct timespec cgt1,cgt2; double ncgt;
 
@@ -24,17 +22,9 @@ int main()
   for(ii = 0; ii < 40000;ii++){
     X1 = 0; X2 = 0;
     
-    for (i = 0; i < 5000; i+=4) {
-      X1 += 2*s[i].a+ii;
-      X2 += 3*s[i].b-ii;
-      X1 += 2*s[i+1].a+ii;
-      X2 += 3*s[i+1].b-ii;
-      X1 += 2*s[i+2].a+ii;
-      X2 += 3*s[i+2].b-ii;
-      X1 += 2*s[i+3].a+ii;
-      X2 += 3*s[i+3].b-ii;
-    }
-
+    for(i = 0; i < 5000; i++) X1+=2*s.a[i]+ii;
+    for(i = 0; i < 5000; i++) X2+=3*s.b[i]-ii;
+    
     R[ii] = (X1 < X2) ? X1 : X2;
   }
 
